@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     public Image winLoseBG;
     public Text scoreText;
     public Text healthText;
-    public float speed = 5f;
+    public float speed = 8f;
     private int score = 0;
     public int health = 5;
 
