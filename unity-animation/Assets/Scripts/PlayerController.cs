@@ -1,19 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public float jumpForce = 5f;
-    private Rigidbody rb;
-    public Transform startPosition;
+    public Transform groundCheck;
+    public float groundCheckRadius = 0.2f;
+    public LayerMask groundLayer;
+    public Vector3 startPosition;
     public float respawnHeight = -10f;
     public float respawnOffset = 2f;
+
+    private bool isJumping = false;
+    private bool isFalling = false;
+    private Rigidbody rb;
+    private Vector3 movement;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+    }
+
+    void Start()
+    {
+        IsGrounded();
     }
 
     private void Update()
@@ -21,20 +31,55 @@ public class PlayerController : MonoBehaviour
         float horizontalMovement = Input.GetAxis("Horizontal");
         float verticalMovement = Input.GetAxis("Vertical");
 
-        Vector3 movement = new Vector3(horizontalMovement, 0f, verticalMovement) * moveSpeed;
-        rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
+        movement = new Vector3(horizontalMovement, 0f, verticalMovement) * moveSpeed;
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (IsGrounded() && Input.GetKeyDown(KeyCode.Space))
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isJumping = true;
+            isFalling = false;
+            Debug.Log("Jump");
         }
 
         if (transform.position.y < respawnHeight)
         {
-            rb.velocity = Vector3.zero;
-            rb.useGravity = false;
-            transform.position = startPosition.position + Vector3.up * respawnOffset;
-            rb.useGravity = true;
+            Respawn();
         }
+
+        if (rb.velocity.y < 0 && !isJumping)
+        {
+            isFalling = true;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
+
+        if (isJumping)
+        {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isJumping = false;
+        }
+    }
+
+    private void Respawn()
+    {
+        rb.velocity = Vector3.zero;
+        rb.useGravity = false;
+        transform.position = startPosition + Vector3.up * respawnOffset;
+        rb.useGravity = true;
+        isFalling = false;
+    }
+
+    private bool IsGrounded()
+    {
+        bool grounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
+        if (grounded)
+        {
+            Debug.Log("Grounded");
+            isJumping = false;
+            isFalling = false;
+        }
+        return grounded;
     }
 }

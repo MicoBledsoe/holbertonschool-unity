@@ -1257,7 +1257,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1001 &281874578
 PrefabInstance:
@@ -2575,7 +2575,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.40784317, g: 0.40784317, b: 0.40784317, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -2621,7 +2621,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &653182066
 MonoBehaviour:
@@ -2635,7 +2635,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03ae95336c950494d93aed4252e9f72a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1400517080}
+  player: {fileID: 0}
   followSpeed: 5
   rotationSpeed: 2
   isInverted: 0
@@ -2648,7 +2648,7 @@ Skybox:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 653182062}
   m_Enabled: 1
-  m_CustomSkybox: {fileID: 2100000, guid: ceb0a3ed2cb53a94fa21843cc958c52b, type: 2}
+  m_CustomSkybox: {fileID: 2100000, guid: 77715b8b6b248994891d3ccad1ad330b, type: 2}
 --- !u!1 &655393832 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 0604edf46fdb24acf961c006a71cf74a, type: 3}
@@ -3964,17 +3964,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: dde10d71ba3a947f488595db8f73f84b, type: 3}
   m_PrefabInstance: {fileID: 1305156131}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1103706842 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8323677467826122534, guid: 792a77cc382cd45aca066a0a918437d8, type: 3}
-  m_PrefabInstance: {fileID: 8323677466806545779}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1104167902
 GameObject:
   m_ObjectHideFlags: 0
@@ -5278,64 +5267,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5f06c9cfc11134ec08fc86e9630d63d9, type: 3}
   m_PrefabInstance: {fileID: 757473866}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1400517076 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7798380385569198033, guid: b351b06cff8514053bc468d5233a0fba, type: 3}
-  m_PrefabInstance: {fileID: 8385858103868150309}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1400517080 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6879459773503702434, guid: b351b06cff8514053bc468d5233a0fba, type: 3}
-  m_PrefabInstance: {fileID: 8385858103868150309}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1400517081
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1400517076}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22d11544669694201b5e657b45a0a39f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 5
-  jumpForce: 5
-  startPosition: {fileID: 1104167903}
-  respawnHeight: -10
-  respawnOffset: 2
---- !u!54 &1400517082
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1400517076}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 0
---- !u!114 &1400517083
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1400517076}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73d4b3bdededc40b9934d92e79682539, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  winCanvas: {fileID: 1616476729}
-  finalTime: {fileID: 1461245965}
-  TimerText: {fileID: 1103706842}
 --- !u!1001 &1419199346
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5405,17 +5336,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dde10d71ba3a947f488595db8f73f84b, type: 3}
---- !u!114 &1461245965 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1441041867743119461, guid: 0f3b503d8c2b24929ba9733bd567df31, type: 3}
-  m_PrefabInstance: {fileID: 238146216}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1466873304
 PrefabInstance:
   m_ObjectHideFlags: 0
