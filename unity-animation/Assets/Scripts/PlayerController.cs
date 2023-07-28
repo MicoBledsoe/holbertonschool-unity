@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 5f;
+    public float turnSpeed = 200f;  // Add a speed factor for turning the player
     public float jumpForce = 5f;
     public Transform groundCheck;
     public float groundCheckRadius = 0.2f;
@@ -33,6 +34,12 @@ public class PlayerController : MonoBehaviour
 
         movement = new Vector3(horizontalMovement, 0f, verticalMovement) * moveSpeed;
 
+        // Rotate the player in the direction of movement
+        if (horizontalMovement != 0) {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement.normalized), Time.deltaTime * turnSpeed);
+        }
+
+        // Check for jump input
         if (IsGrounded() && Input.GetKeyDown(KeyCode.Space))
         {
             isJumping = true;
@@ -55,9 +62,10 @@ public class PlayerController : MonoBehaviour
     {
         rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
 
+        // Execute the jump in FixedUpdate
         if (isJumping)
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
             isJumping = false;
         }
     }
