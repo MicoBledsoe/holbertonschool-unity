@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 5f;
-    public float turnSpeed = 200f;  // Add a speed factor for turning the player
+    public float turnSpeed = 200f; 
     public float jumpForce = 5f;
     public Transform groundCheck;
     public float groundCheckRadius = 0.2f;
@@ -16,10 +16,13 @@ public class PlayerController : MonoBehaviour
     private bool isFalling = false;
     private Rigidbody rb;
     private Vector3 movement;
+    [SerializeField]
+    private Animator animator;  
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        //animator = GetComponent<Animator>();  
     }
 
     void Start()
@@ -34,12 +37,18 @@ public class PlayerController : MonoBehaviour
 
         movement = new Vector3(horizontalMovement, 0f, verticalMovement) * moveSpeed;
 
-        // Rotate the player in the direction of movement
         if (horizontalMovement != 0) {
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement.normalized), Time.deltaTime * turnSpeed);
         }
 
-        // Check for jump input
+        if (movement != Vector3.zero) {
+            animator.SetBool("isRunning", true);
+            Debug.Log("Running animation should be playing");  // Debug statement 1
+        } else {
+            animator.SetBool("isRunning", false);
+            Debug.Log("Idle animation should be playing");  // Debug statement 2
+        }
+
         if (IsGrounded() && Input.GetKeyDown(KeyCode.Space))
         {
             isJumping = true;
@@ -62,7 +71,6 @@ public class PlayerController : MonoBehaviour
     {
         rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
 
-        // Execute the jump in FixedUpdate
         if (isJumping)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
