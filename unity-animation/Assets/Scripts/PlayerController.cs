@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
 
     private bool isJumping = false;
     private bool isFalling = false;
+    private bool isRespawning = false; // New flag
     private Rigidbody rb;
     private Vector3 movement;
     private bool isGrounded = false;
@@ -62,8 +63,6 @@ public class PlayerController : MonoBehaviour
         {
             isFalling = true;
             animator.SetBool("isFalling", true);
-            Debug.Log("Falling animation should be playing");
-            Debug.Log("Started falling at time: " + Time.time);
         }
         else
         {
@@ -87,6 +86,13 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("FallingToImpact", false);
         }
 
+        // Handle the respawning animation when grounded
+        if (isRespawning && isGrounded)
+        {
+            isRespawning = false;
+            animator.SetBool("isRespawning", false); // Assuming you've added this to your Animator Controller
+            animator.Play("Falling Flat Impact");
+        }
     }
 
     private void FixedUpdate()
@@ -96,8 +102,8 @@ public class PlayerController : MonoBehaviour
         if (isJumpKeyPressed)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
-            isJumping = true; // Indicate that jump has started
-            isJumpKeyPressed = false; // Reset the flag
+            isJumping = true;
+            isJumpKeyPressed = false;
         }
     }
 
@@ -111,12 +117,13 @@ public class PlayerController : MonoBehaviour
         isFalling = false;
         isJumping = false;
         isGrounded = true;
+        isRespawning = true;  // Indicate that the player is respawning
+
         animator.SetBool("isJumping", false);
         animator.SetBool("isFalling", false);
         animator.SetBool("isRunning", false);
         animator.SetBool("isGrounded", true);
-        Debug.Log($"Respawning. isFalling: {isFalling}, isJumping: {isJumping}, isGrounded: {isGrounded}");
-        animator.Play("Falling Flat Impact");
+        animator.SetBool("isRespawning", false);  // Assuming you've added this to your Animator Controller
     }
 
     private IEnumerator CheckGroundedStatus()
@@ -128,11 +135,10 @@ public class PlayerController : MonoBehaviour
             isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
             if (isGrounded)
             {
-                Debug.Log("Grounded");
                 isJumping = false;
                 isFalling = false;
-                animator.SetBool("isJumping", false); // Reset isJumping to false in animator
-                animator.SetBool("isFalling", false); // Reset isFalling to false in animator
+                animator.SetBool("isJumping", false);
+                animator.SetBool("isFalling", false);
             }
         }
     }
