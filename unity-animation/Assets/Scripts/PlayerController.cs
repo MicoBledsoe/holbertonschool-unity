@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 movement;
     private bool isGrounded = false;
     private bool isJumpKeyPressed = false;
-    [SerializeField]
+    [SerializeField] // protection of data
     private Animator animator;
 
     private void Awake()
