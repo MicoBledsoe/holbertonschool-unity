@@ -4,7 +4,6 @@ public class TimerTrigger : MonoBehaviour
 {
     private Timer timerScript;
     private bool timerStarted;
-    public Animator Player;
 
     private void Start()
     {
@@ -17,7 +16,6 @@ public class TimerTrigger : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             timerStarted = true;
-            Player.SetBool("HasFallen", true);
         }
     }
 
@@ -31,6 +29,5 @@ public class TimerTrigger : MonoBehaviour
             }
         }
     }
-
 }
 

@@ -5,9 +5,18 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    private AudioSource bgmAudioSource;
+
+    private void Start() 
+    {
+        bgmAudioSource = GameObject.Find("BackgroundMusicManager").GetComponent<AudioSource>();
+        bgmAudioSource.Play();
+    }
     public void LevelSelect(int level)
     {
         string sceneName = "Level" + level.ToString("D2");
+        bgmAudioSource.Stop();
+
         SceneManager.LoadScene(sceneName);
     }
     public void OptionsButton()

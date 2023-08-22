@@ -1,144 +1,181 @@
-using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Audio;
 
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 5f;
-    public float turnSpeed = 200f;
-    public float jumpForce = 5f;
-    public Transform groundCheck;
-    public float groundCheckRadius = 0.2f;
-    public LayerMask groundLayer;
-    public Vector3 startPosition;
+    public float rotationSpeed = 100f;
+    public float jumpForce = 7f;
+    private Rigidbody rb;
+    public Transform startPosition;
     public float respawnHeight = -10f;
     public float respawnOffset = 2f;
-
-    private bool isJumping = false;
     private bool isFalling = false;
-    private bool isRespawning = false; // New flag
-    private Rigidbody rb;
-    private Vector3 movement;
-    private bool isGrounded = false;
-    private bool isJumpKeyPressed = false;
-    [SerializeField] // protection of data
+    private bool isJumpingRecently = false;
+    private float jumpCooldown = 1.0f;
+    private float timeSinceLastJump = 0.0f;
+    private Quaternion originalRotation;
+    private bool isRespawning = false;
+
+    public AudioClip GrassRun;
+    public AudioClip StoneRun;
+    [SerializeField]
+    private AudioSource runningsoundsSFXAudioSource;
+    public AudioClip FlatGrass;
+    public AudioClip FlatStone;
+    private AudioSource fallingFlatSFX;
+
+    [SerializeField] Transform groundCheck;
+    [SerializeField] LayerMask ground;
+
     private Animator animator;
 
     private void Awake()
     {
+        animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
-    }
-
-    void Start()
-    {
-        StartCoroutine(CheckGroundedStatus());
+        originalRotation = transform.rotation;
+        runningsoundsSFXAudioSource = GameObject.Find("RunningSounds").GetComponent<AudioSource>();
+        runningsoundsSFXAudioSource.loop = true;
+        fallingFlatSFX = GameObject.Find("FallingFlatSounds").GetComponent<AudioSource>();
     }
 
     private void Update()
     {
-        float horizontalMovement = Input.GetAxis("Horizontal");
+        float horizontalRotation = Input.GetAxis("Horizontal");
         float verticalMovement = Input.GetAxis("Vertical");
+        
+        // Quaternion-based rotation
+        Quaternion deltaRotation = Quaternion.Euler(0f, horizontalRotation * rotationSpeed * Time.deltaTime, 0f);
+        transform.rotation *= deltaRotation;
 
-        movement = new Vector3(horizontalMovement, 0f, verticalMovement) * moveSpeed;
+        Vector3 movementDirection = transform.forward * verticalMovement;
+        Vector3 movement = movementDirection * moveSpeed;
+        rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
 
-        if (horizontalMovement != 0)
+        if (movementDirection != Vector3.zero && IsGrounded())
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement.normalized), Time.deltaTime * turnSpeed);
-        }
-
-        if (movement != Vector3.zero)
-        {
-            animator.SetBool("isRunning", true);
+            animator.SetBool("IsMoving", true);
+            if (!runningsoundsSFXAudioSource.isPlaying)
+            {
+                PlaySound();
+            }
         }
         else
         {
-            animator.SetBool("isRunning", false);
+            animator.SetBool("IsMoving", false);
+            if (runningsoundsSFXAudioSource.isPlaying)
+            {
+                runningsoundsSFXAudioSource.Stop();
+            }
+        }
+        
+        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded() && !isJumpingRecently)
+        {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            animator.SetBool("IsJumping", true);
+
+            isJumpingRecently = true;
+            timeSinceLastJump = 0.0f;
+        }
+        else
+        {
+            if (timeSinceLastJump < jumpCooldown)
+            {
+                animator.SetBool("IsJumping", false);
+                timeSinceLastJump += Time.deltaTime;
+            }
+            else
+            {
+                isJumpingRecently = false;
+            }
+        }
+
+        if (!IsGrounded() && !isFalling && !isJumpingRecently)
+        {
+            isFalling = true;
+            animator.SetBool("IsFalling", true);
+            Debug.Log("Falling");
+        }
+        else if ((IsGrounded() || isJumpingRecently) && isFalling)
+        {
+            isFalling = false;
+            animator.SetBool("IsFalling", false);
+            Debug.Log("Landed");
         }
 
         if (transform.position.y < respawnHeight)
         {
-            Respawn();
-        }
-
-        if (!isGrounded && rb.velocity.y < -0.5f && !isJumping)
-        {
-            isFalling = true;
-            animator.SetBool("isFalling", true);
-        }
-        else
-        {
-            isFalling = false;
-            animator.SetBool("isFalling", false);
-        }
-
-        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
-        {
-            isJumpKeyPressed = true;
-            animator.SetBool("isJumping", true);
-            isFalling = false;
-        }
-
-        if (isGrounded && isFalling && Vector3.Distance(transform.position, startPosition) < 0.1f)
-        {
-            animator.SetBool("FallingToImpact", true);
-        }
-        else
-        {
-            animator.SetBool("FallingToImpact", false);
-        }
-
-        // Handle the respawning animation when grounded
-        if (isRespawning && isGrounded)
-        {
-            isRespawning = false;
-            animator.SetBool("isRespawning", false); // Assuming you've added this to your Animator Controller
-            animator.Play("Falling Flat Impact");
+            rb.velocity = Vector3.zero;
+            rb.useGravity = false;
+            transform.position = startPosition.position + Vector3.up * respawnOffset;
+            rb.useGravity = true;
+            transform.rotation = originalRotation;
+            animator.SetBool("IsJumping", false);
+            animator.SetBool("IsFalling", false);
+            animator.SetBool("FallingFlat", true);
+            Splat();
+            FlatSounds();
         }
     }
 
-    private void FixedUpdate()
+    private bool IsGrounded()
     {
-        rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
-
-        if (isJumpKeyPressed)
-        {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
-            isJumping = true;
-            isJumpKeyPressed = false;
-        }
+        return Physics.CheckSphere(groundCheck.position, .15f, ground);
     }
 
-    private void Respawn()
+    private void Splat()
     {
-        rb.velocity = Vector3.zero;
-        rb.useGravity = false;
-        transform.position = startPosition + Vector3.up * respawnOffset;
-        rb.useGravity = true;
-
-        isFalling = false;
-        isJumping = false;
-        isGrounded = true;
-        isRespawning = true;  // Indicate that the player is respawning
-
-        animator.SetBool("isJumping", false);
-        animator.SetBool("isFalling", false);
-        animator.SetBool("isRunning", false);
-        animator.SetBool("isGrounded", true);
-        animator.SetBool("isRespawning", false);  // Assuming you've added this to your Animator Controller
+        animator.SetBool("GettingUp", true);
+        animator.SetBool("BackToIdle", true);
     }
 
-    private IEnumerator CheckGroundedStatus()
+    private void PlaySound()
     {
-        while (true)
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, ground))
         {
-            yield return new WaitForSeconds(0.1f);
+            string material = hit.collider.gameObject.tag;
 
-            isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
-            if (isGrounded)
+            if (material != null)
             {
-                isJumping = false;
-                isFalling = false;
-                animator.SetBool("isJumping", false);
-                animator.SetBool("isFalling", false);
+                Debug.Log("Player is standing on material: " + material);
+            }
+
+            if (hit.collider.gameObject.CompareTag("Rock"))
+            {
+                runningsoundsSFXAudioSource.clip = StoneRun;
+                runningsoundsSFXAudioSource.Play();
+            }
+            else
+            {
+                runningsoundsSFXAudioSource.clip = GrassRun;
+                runningsoundsSFXAudioSource.Play();
+            }
+        }
+    }
+
+    private void FlatSounds()
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, ground))
+        {
+            string material = hit.collider.gameObject.tag;
+
+            if (material != null)
+            {
+                Debug.Log("Player is splatted all over: " + material);
+            }
+
+            if (hit.collider.gameObject.CompareTag("Rock"))
+            {
+                fallingFlatSFX.clip = FlatStone;
+                fallingFlatSFX.Play();
+            }
+            else
+            {
+                fallingFlatSFX.clip = FlatGrass;
+                fallingFlatSFX.Play();
             }
         }
     }
