@@ -3,34 +3,41 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
+/// <summary>
+/// Controls the behavior of the player character.
+/// </summary>
 public class PlayerController : MonoBehaviour
 {
+    [Header("Movement Settings")]
     public float moveSpeed = 5f;
     public float rotationSpeed = 100f;
     public float jumpForce = 7f;
     private Rigidbody rb;
+
+    [Header("Respawn Settings")]
     public Transform startPosition;
     public float respawnHeight = -10f;
     public float respawnOffset = 2f;
-    private bool isFalling = false;
-    private bool isJumpingRecently = false;
-    private float jumpCooldown = 1.0f;
-    private float timeSinceLastJump = 0.0f;
     private Quaternion originalRotation;
-    private bool isRespawning = false;
 
+    [Header("Audio Clips")]
     public AudioClip GrassRun;
     public AudioClip StoneRun;
-    [SerializeField]
-    private AudioSource runningsoundsSFXAudioSource;
+    [SerializeField] private AudioSource runningsoundsSFXAudioSource;
     public AudioClip FlatGrass;
     public AudioClip FlatStone;
     private AudioSource fallingFlatSFX;
 
-    [SerializeField] Transform groundCheck;
-    [SerializeField] LayerMask ground;
+    [Header("Ground Check")]
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask ground;
 
     private Animator animator;
+
+    private bool isFalling = false;
+    private bool isJumpingRecently = false;
+    private float jumpCooldown = 1.0f;
+    private float timeSinceLastJump = 0.0f;
 
     private void Awake()
     {
@@ -44,34 +51,51 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        HandleRotation();
+        HandleMovement();
+        HandleAnimations();
+        HandleJumping();
+        HandleFalling();
+
+        HandleRespawn();
+    }
+
+    private void HandleRotation()
+    {
+        // Handle player rotation based on input
         float horizontalRotation = Input.GetAxis("Horizontal");
-        float verticalMovement = Input.GetAxis("Vertical");
-        
-        // Quaternion-based rotation
         Quaternion deltaRotation = Quaternion.Euler(0f, horizontalRotation * rotationSpeed * Time.deltaTime, 0f);
         transform.rotation *= deltaRotation;
+    }
 
+    private void HandleMovement()
+    {
+        // Handle player movement based on input
+        float verticalMovement = Input.GetAxis("Vertical");
         Vector3 movementDirection = transform.forward * verticalMovement;
         Vector3 movement = movementDirection * moveSpeed;
         rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
+    }
 
+    private void HandleAnimations()
+    {
+        // Handle player animations and sound based on movement
+        Vector3 movementDirection = transform.forward * Input.GetAxis("Vertical");
         if (movementDirection != Vector3.zero && IsGrounded())
         {
             animator.SetBool("IsMoving", true);
-            if (!runningsoundsSFXAudioSource.isPlaying)
-            {
-                PlaySound();
-            }
+            PlayFootstepSound();
         }
         else
         {
             animator.SetBool("IsMoving", false);
-            if (runningsoundsSFXAudioSource.isPlaying)
-            {
-                runningsoundsSFXAudioSource.Stop();
-            }
+            StopFootstepSound();
         }
-        
+    }
+
+    private void HandleJumping()
+    {
+        // Handle player jumping based on input and cooldown
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded() && !isJumpingRecently)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
@@ -92,7 +116,11 @@ public class PlayerController : MonoBehaviour
                 isJumpingRecently = false;
             }
         }
+    }
 
+    private void HandleFalling()
+    {
+        // Handle player falling animations and states
         if (!IsGrounded() && !isFalling && !isJumpingRecently)
         {
             isFalling = true;
@@ -105,7 +133,11 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("IsFalling", false);
             Debug.Log("Landed");
         }
+    }
 
+    private void HandleRespawn()
+    {
+        // Handle player respawn mechanics if fallen below respawn height
         if (transform.position.y < respawnHeight)
         {
             rb.velocity = Vector3.zero;
@@ -116,67 +148,63 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("IsJumping", false);
             animator.SetBool("IsFalling", false);
             animator.SetBool("FallingFlat", true);
-            Splat();
-            FlatSounds();
+            PerformSplatAnimation();
+            PlayFallingFlatSound();
         }
     }
 
     private bool IsGrounded()
     {
-        return Physics.CheckSphere(groundCheck.position, .15f, ground);
+        // Check if the player is grounded using a sphere cast
+        return Physics.CheckSphere(groundCheck.position, 0.15f, ground);
     }
 
-    private void Splat()
+    private void PlayFootstepSound()
     {
-        animator.SetBool("GettingUp", true);
-        animator.SetBool("BackToIdle", true);
-    }
-
-    private void PlaySound()
-    {
+        // Play footstep sound based on the ground material
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, ground))
         {
             string material = hit.collider.gameObject.tag;
-
             if (material != null)
             {
                 Debug.Log("Player is standing on material: " + material);
             }
-
-            if (hit.collider.gameObject.CompareTag("Rock"))
+            runningsoundsSFXAudioSource.clip = (material == "Rock") ? StoneRun : GrassRun;
+            if (!runningsoundsSFXAudioSource.isPlaying)
             {
-                runningsoundsSFXAudioSource.clip = StoneRun;
-                runningsoundsSFXAudioSource.Play();
-            }
-            else
-            {
-                runningsoundsSFXAudioSource.clip = GrassRun;
                 runningsoundsSFXAudioSource.Play();
             }
         }
     }
 
-    private void FlatSounds()
+    private void StopFootstepSound()
     {
+        // Stop the footstep sound if it's currently playing
+        if (runningsoundsSFXAudioSource.isPlaying)
+        {
+            runningsoundsSFXAudioSource.Stop();
+        }
+    }
+
+    private void PerformSplatAnimation()
+    {
+        // Trigger animation for the player being splatted on the ground
+        animator.SetBool("GettingUp", true);
+        animator.SetBool("BackToIdle", true);
+    }
+
+    private void PlayFallingFlatSound()
+    {
+        // Play the appropriate falling flat sound based on the ground material
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, ground))
         {
             string material = hit.collider.gameObject.tag;
-
             if (material != null)
             {
                 Debug.Log("Player is splatted all over: " + material);
             }
-
-            if (hit.collider.gameObject.CompareTag("Rock"))
-            {
-                fallingFlatSFX.clip = FlatStone;
-                fallingFlatSFX.Play();
-            }
-            else
-            {
-                fallingFlatSFX.clip = FlatGrass;
-                fallingFlatSFX.Play();
-            }
+            fallingFlatSFX.clip = (material == "Rock") ? FlatStone : FlatGrass;
+            fallingFlatSFX.Play();
         }
     }
 }
