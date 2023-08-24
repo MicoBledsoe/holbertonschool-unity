@@ -20,14 +20,23 @@ public class WinTrigger : MonoBehaviour
             BackgroundMusicController bgmController = GameObject.Find("BackgroundMusic").GetComponent<BackgroundMusicController>();
             bgmController.StopMusic();
 
-        }
-        Timer otherTimer = other.GetComponent<Timer>();
-        if (otherTimer != null)
-        {
-            float finishTime = Time.time - startTime;
-            otherTimer.Win(finishTime);
-            if (winCanvas != null)
-                winCanvas.SetActive(true);
+            Timer otherTimer = other.GetComponent<Timer>();
+            if (otherTimer != null)
+            {
+                float finishTime = Time.time - startTime;
+                otherTimer.Win(finishTime);
+                if (winCanvas != null)
+                    winCanvas.SetActive(true);
+            }
+
+            // Load the next level
+            int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+            int nextSceneIndex = currentSceneIndex + 1;
+            if (nextSceneIndex >= SceneManager.sceneCountInBuildSettings)
+            {
+                nextSceneIndex = 0; // Loop back to the start or set to a specific scene
+            }
+            SceneManager.LoadScene(nextSceneIndex);
         }
     }
 }
