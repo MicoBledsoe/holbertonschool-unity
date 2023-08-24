@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// Handles playing rollover and click sounds for a UI button.
+/// </summary>
 public class ButtonSound : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
 {
     private AudioSource menuSFXAudioSource;
@@ -11,7 +14,7 @@ public class ButtonSound : MonoBehaviour, IPointerEnterHandler, IPointerClickHan
 
     private void Start()
     {
-        // Find the MenuSFX GameObject's AudioSource
+        // Find the AudioSource responsible for menu sound effects
         menuSFXAudioSource = GameObject.Find("MenuSFX").GetComponent<AudioSource>();
     }
 
