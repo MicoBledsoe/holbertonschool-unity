@@ -27,6 +27,7 @@ public class CutsceneController : MonoBehaviour
             Debug.Log("Enabling player...");
             //Enabling Player Controll
             player.GetComponent<PlayerController>().enabled = true;
+            this.gameObject.SetActive(false);
 
             //Enabling Timer
             timerCanvas.enabled = true;

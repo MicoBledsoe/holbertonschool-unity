@@ -22,14 +22,16 @@ public class Cameracontroller : MonoBehaviour
         offset = transform.position - player.position;
     }
 
-    private void Update() //updates every frame contacntly within the game 
+    private void LateUpdate() //updates every frame contacntly within the game 
     {
     // Camera follows the player
     Debug.Log("CameraController Update");
     Vector3 targetPosition = player.position + offset; // Calculate the target position based on the OGPlayers position and the initial offset.
     targetPosition.y = Mathf.Max(targetPosition.y, minY); // Ensure the camera doesn't go below the minimum Y value.
     transform.position = Vector3.Lerp(transform.position, targetPosition, followSpeed * Time.deltaTime); // gives more of a smooth interpolate the camera's position towards the target position.
-    //caculates linearly between to vectors
+    Debug.Log("POS: " + Vector3.Lerp(transform.position, targetPosition, followSpeed * Time.deltaTime)); // gives more of a smooth interpolate the camera's position towards the target position.)
+    //caculates linearly between two vectors
+
     // Handling camera rotation
     if (Input.GetMouseButton(0)) // If the left mouse button is held down...
     {
