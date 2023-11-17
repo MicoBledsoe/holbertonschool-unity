@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour //playercontroller class inherting
 
         if(Input.GetKeyDown(KeyCode.T)) //if the 'T' keybind input is being pressed
         {
-            //FORCE RESPAWN OGPlayer at any moment in the game if the 'T' keybind is pressed only where the OGPlayer is currently at though
+            //FORCE RESPAWN OGPlayer at any moment in the game if the 'T' keybind is pressed anywhere the OGPlayer is located or falling off the map works
             RespawnOGPlayer();
         }
         if (Input.GetKeyDown(KeyCode.Space)) //if the space bar keybind is being pressed
