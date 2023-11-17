@@ -1,34 +1,57 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class Timer : MonoBehaviour
 {
-    public Text TimerText;
-    private float elapsedTime;
+    public Text TimerScreenText; //The text that is shown on screen in the game
+    private float elapsedTimeInGame; //Elasped time in game
+    private bool timerActive = true;
+    public float stopHeight = -10f; //The threshold to stop the TimerScreenText
+    public Transform OG_StartPosition; //Referencing the player's transform
 
     private void Start()
     {
-        // Reset the elapsed time
-        elapsedTime = 0f;
+        // resetting the elapsed time
+        elapsedTimeInGame = 0f;
+        
+        if(TimerScreenText == null)
+        {
+            Debug.LogError("MyScreenText is not set");
+            return; // or just handle the null case
+        }
     }
 
     void OnDisable()
     {
-        TimerText.color = Color.green;
-        TimerText.fontSize = 80;
+        if(TimerScreenText != null)
+        {
+        TimerScreenText.color = Color.green; // The TimerScreenText color
+        TimerScreenText.fontSize = 50; //sizing of the text
+        }
     }
 
-    private void Update()
+    private void Update() //updating every frame
     {
+        if(OG_StartPosition.position.y < stopHeight) //if the players height is below a certain height then this will force stop the TimerScreenText on screen
+        {
+            timerActive = false; //turns false
+            Debug.Log($"Timer Active: {timerActive}, Y Position: {OG_StartPosition.position.y}"); //helped me with process of elimination to figure out why my timer wasn't working
+        }
+
+        if(timerActive) //this updates the timer only if its active !!!
+        {
+
         // Update the elapsed time
-        elapsedTime += Time.deltaTime;
+        elapsedTimeInGame += Time.deltaTime;
 
-        // Calculate minutes, seconds, and milliseconds
-        int minutes = (int)(elapsedTime / 60f);
-        int seconds = (int)(elapsedTime % 60f);
-        int milliseconds = (int)((elapsedTime * 100f) % 100f);
+        // This Calculates the minutes, seconds, and milliseconds during the game constantly
+        int minutes = (int)(elapsedTimeInGame / 60f); //caculatin 
+        int seconds = (int)(elapsedTimeInGame % 60f); //caculating the seconds
+        int milliseconds = (int)((elapsedTimeInGame * 100f) % 100f); //caculating the milliseconds
 
-        // Update the TimerText object with the formatted time
-        TimerText.text = string.Format("{0:00}:{1:00}.{2:00}", minutes, seconds, milliseconds);
+        // Update the TimerText object with the formatted time which will appear on to the screen
+        TimerScreenText.text = $"{minutes:00}:{seconds:00}.{milliseconds:000}";
+        }
     }
 }
