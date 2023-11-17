@@ -1096,7 +1096,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1400517080}
-  followSpeed: 10
+  followSpeed: 5
   rotationSpeed: 2
   isInverted: 0
   minY: 0
