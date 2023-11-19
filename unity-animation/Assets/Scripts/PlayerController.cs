@@ -12,11 +12,13 @@ public class PlayerController : MonoBehaviour //playercontroller class inherting
     private Rigidbody RB;
     public Vector3 OG_StartPosition; //This is for marking the starting position in which is a reference to the Transform component
     public float rotationSpeed = 700f; //This is for the rotation of OGPlayer
+    public Animator animator; // Animator component controlling the OGPlayer's animation states and transitions.
 
     //ensuring that necessary references are set up before the game starts
     private void Awake() //This lifecycle method is called when the instance is being loaded
     {
         RB = GetComponent<Rigidbody>(); //assigns the rigidbody component to the var RB !
+        animator = GetComponent<Animator>(); // Retrieves the Animator component attached to this GameObject, also used to manage animation states and transitions !
         
         OG_StartPosition = new Vector3(0f, 0.358517f, 0f);
     }
@@ -49,6 +51,10 @@ public class PlayerController : MonoBehaviour //playercontroller class inherting
 
         Vector3 Movement = new Vector3(XMovement, 0f, YMovement) * Speed; //caculating the movement direction according when the player gives input
         RB.velocity = new Vector3(Movement.x, RB.velocity.y, Movement.z);//this sets the Rigidbodys horizontal velocity based on players input.
+
+        //Figures out if the OGPlayer is moving
+        bool isMovingOGPlayer = XMovement != 0 || YMovement != 0; //boolean var, set to true if either X or Y is true if its zero then that means OG is stationary
+        animator.SetBool("IsRunning", isMovingOGPlayer); // Sets the 'IsRunning' Animator parameter to true if the player is moving, false if not otherwise !
 
         // Rotation logic
         float rotation = Input.GetAxis("Horizontal") * rotationSpeed * Time.deltaTime; // calculates a rotation value based on OGplayer's horizontal input
