@@ -509,6 +509,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Start
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e9aa2b525e40041b4955f358a3dca411, type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e9aa2b525e40041b4955f358a3dca411, type: 3}
 --- !u!1 &281312958
@@ -2694,6 +2698,7 @@ MonoBehaviour:
   RespawnOffset: 2
   OG_StartPosition: {x: 0, y: 0, z: 0}
   rotationSpeed: 150
+  animator: {fileID: 0}
 --- !u!54 &1400517082
 Rigidbody:
   m_ObjectHideFlags: 0

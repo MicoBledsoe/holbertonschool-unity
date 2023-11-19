@@ -23,6 +23,22 @@ public class PlayerController : MonoBehaviour //playercontroller class inherting
         OG_StartPosition = new Vector3(0f, 0.358517f, 0f);
     }
 
+    private void OnCollisionEnter(Collision OGCollision) //Enter Collision when OG comes in contact with another object
+    {
+        if(OGCollision.gameObject.tag == "Ground") //Checking if the collision is with a GameObject tagged as "Ground" in the inspector
+        {
+            animator.SetBool("OGHasLanded", true); //Set the Animator parameter OGHasLanded to true, indicating the OGPlayer has landed on the ground
+        }
+    }
+    
+    private void OnCollisionExit(Collision OGCollision) //Exit Collision when OG stops colliding with another object
+    {
+        if(OGCollision.gameObject.tag == "Ground") //Checking if the collision that ended is with a GameObject tagged as "Ground" in the inspector
+        {
+            animator.SetBool("OGHasLanded", false); //Checking the Animator parameter OGHasLanded to false, indicating the OPlayer is no longer on the ground
+        }
+    }
+
     private void RespawnOGPlayer() //created my own method and obv void means it doesnt return any value to it 
     {
     Debug.LogError("Respawning player...");
@@ -68,6 +84,7 @@ public class PlayerController : MonoBehaviour //playercontroller class inherting
         if (Input.GetKeyDown(KeyCode.Space)) //if the space bar keybind is being pressed
         {
             RB.AddForce(Vector3.up * jumpForceUp, ForceMode.Impulse); // this adds a upward force to the rb aka rigidbody, using an impulse which simulates a jump
+            animator.SetTrigger("Jump"); //setting the OGani trigger
         }
 
         if (transform.position.y < RespawnHeight) // if the transform is less than the respawn height than it will reset the postion then it will disable gravity and renable 
