@@ -2750,6 +2750,7 @@ MonoBehaviour:
   RespawnHeight: -12
   RespawnOffset: 2
   OG_StartPosition: {x: 0, y: 0, z: 0}
+  rotationSpeed: 150
 --- !u!54 &1400517082
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4152,6 +4153,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1400517083, guid: b351b06cff8514053bc468d5233a0fba, type: 3}
+      propertyPath: TimerScreenText
+      value: 
+      objectReference: {fileID: 1103706842}
     - target: {fileID: 6871426210497315303, guid: b351b06cff8514053bc468d5233a0fba, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -4223,6 +4228,10 @@ PrefabInstance:
     - target: {fileID: 7798380385569198033, guid: b351b06cff8514053bc468d5233a0fba, type: 3}
       propertyPath: m_TagString
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8352546728108569994, guid: b351b06cff8514053bc468d5233a0fba, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b351b06cff8514053bc468d5233a0fba, type: 3}

@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour //playercontroller class inherting
     public float RespawnOffset = 2f; //Respawn Offset
     private Rigidbody RB;
     public Vector3 OG_StartPosition; //This is for marking the starting position in which is a reference to the Transform component
+    public float rotationSpeed = 700f; //This is for the rotation of OGPlayer
 
     //ensuring that necessary references are set up before the game starts
     private void Awake() //This lifecycle method is called when the instance is being loaded
@@ -49,6 +50,10 @@ public class PlayerController : MonoBehaviour //playercontroller class inherting
         Vector3 Movement = new Vector3(XMovement, 0f, YMovement) * Speed; //caculating the movement direction according when the player gives input
         RB.velocity = new Vector3(Movement.x, RB.velocity.y, Movement.z);//this sets the Rigidbodys horizontal velocity based on players input.
 
+        // Rotation logic
+        float rotation = Input.GetAxis("Horizontal") * rotationSpeed * Time.deltaTime; // calculates a rotation value based on OGplayer's horizontal input
+        transform.Rotate(0, rotation, 0); // This rotates the OGPlayer on the Y axis
+
         if(Input.GetKeyDown(KeyCode.T)) //if the 'T' keybind input is being pressed
         {
             //FORCE RESPAWN OGPlayer at any moment in the game if the 'T' keybind is pressed anywhere the OGPlayer is located or falling off the map works
@@ -63,8 +68,6 @@ public class PlayerController : MonoBehaviour //playercontroller class inherting
         {
             Debug.LogError("Player position: " + transform.position.y);
             Debug.LogError("RespawnHeight: " + RespawnHeight);
-
-           Debug.LogError("Checking to make sure the player is below a certain height");
 
            //TO respawn the player
            RespawnOGPlayer();
