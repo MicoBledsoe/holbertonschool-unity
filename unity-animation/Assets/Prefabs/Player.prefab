@@ -136,6 +136,7 @@ MonoBehaviour:
   RespawnHeight: -12
   RespawnOffset: 2
   OG_StartPosition: {x: 0, y: 0, z: 0}
+  rotationSpeed: 100
 --- !u!114 &1400517083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,7 +225,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: ty
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5866666021909216657, guid: 81c905883193740a3bb053401f9ff264, type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 81c905883193740a3bb053401f9ff264, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 398c4f5081f864d628117c7491807816, type: 2}
+    - target: {fileID: 5866666021909216657, guid: 81c905883193740a3bb053401f9ff264, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 5866666021909216657, guid: 81c905883193740a3bb053401f9ff264, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 81c905883193740a3bb053401f9ff264, type: 3}
 --- !u!4 &8352546728108569994 stripped
 Transform:
