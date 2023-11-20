@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour //playercontroller class inherting
     public float rotationSpeed = 700f; //This is for the rotation of OGPlayer
     public Animator animator; // Animator component controlling the OGPlayer's animation states and transitions.
     private bool isOGGrounded; //Keeping track if OGPlayer is grounded
+    private float jumpTimeCounter; //Time tracked since jump
+    private bool justJumped = false;
 
     //ensuring that necessary references are set up before the game starts
     private void Awake() //This lifecycle method is called when the instance is being loaded
@@ -77,12 +79,19 @@ public class PlayerController : MonoBehaviour //playercontroller class inherting
         animator.SetBool("IsRunning", isMovingOGPlayer); // Sets the 'IsRunning' Animator parameter to true if the player is moving, false if not otherwise !
         
         //Figures out if the OGPlayer is falling
-        bool OGPlayerFalling = RB.velocity.y < 0 && !isOGGrounded;
+        bool OGPlayerFalling = (RB.velocity.y < -0.5f) && !isOGGrounded && !justJumped; //0.5 is the threshold for falling !
         animator.SetBool("OGPlayerFalling", OGPlayerFalling);
+        Debug.Log("Velocity Y: " + RB.velocity.y + ", isOGGrounded: " + isOGGrounded + ", OGPlayerFalling: " + OGPlayerFalling);
+
+        if(justJumped &&(Time.time - jumpTimeCounter > 0.2f)) //0.2 seconds of delay
+        {
+            justJumped = false;
+        }
 
         // Rotation logic
         float rotation = Input.GetAxis("Horizontal") * rotationSpeed * Time.deltaTime; // calculates a rotation value based on OGplayer's horizontal input
         transform.Rotate(0, rotation, 0); // This rotates the OGPlayer on the Y axis
+
 
         if(Input.GetKeyDown(KeyCode.T)) //if the 'T' keybind input is being pressed
         {
@@ -93,6 +102,9 @@ public class PlayerController : MonoBehaviour //playercontroller class inherting
         {
             RB.AddForce(Vector3.up * jumpForceUp, ForceMode.Impulse); // this adds a upward force to the rb aka rigidbody, using an impulse which simulates a jump
             animator.SetTrigger("Jump"); //setting the OGani trigger
+            Debug.Log("Jump Initiated");
+            justJumped = true;
+            jumpTimeCounter = Time.time;
         }
 
         if (transform.position.y < RespawnHeight) // if the transform is less than the respawn height than it will reset the postion then it will disable gravity and renable 
