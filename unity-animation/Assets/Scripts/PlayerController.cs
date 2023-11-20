@@ -73,8 +73,8 @@ public class PlayerController : MonoBehaviour //playercontroller class inherting
 
     private void Update() //Constantly updating every frame for any input by the user that happens within the game
     {
-        float XMovement = Input.GetAxis("Horizontal"); //Grabs/checks the players horizontal inputs like the 'A' and 'D' keybinds
-        float ZMovement = Input.GetAxis("Vertical"); //Grabs/checks the players Vertical inputs like the 'W' and 'S' keybinds
+        float XMovement = Input.GetAxis("Horizontal"); //Grabs/checks the players horizontal inputs like the 'A' and 'D' keybinds -- LEFT/RIGHT
+        float ZMovement = Input.GetAxis("Vertical"); //Grabs/checks the players Vertical inputs like the 'W' and 'S' keybinds -- FORWARD/BACKWARD
 
         Vector3 Movement = new Vector3(XMovement, 0f, ZMovement) * Speed; //caculating the movement direction according when the player gives input
         RB.velocity = new Vector3(Movement.x, RB.velocity.y, Movement.z);//this sets the Rigidbodys horizontal velocity based on players input.
