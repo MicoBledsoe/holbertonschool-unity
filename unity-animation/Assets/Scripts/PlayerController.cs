@@ -32,7 +32,12 @@ public class PlayerController : MonoBehaviour //playercontroller class inherting
         {
             isOGGrounded = true;
             animator.SetBool("OGHasLanded", true); //Set the Animator parameter OGHasLanded to true, indicating the OGPlayer has landed on the ground
-            animator.SetBool("OGPlayerFalling", false); //makeing sure the falling animation stops when the OGPlayer lands
+
+            if(animator.GetBool("OGPlayerFalling"))
+            {
+                animator.SetTrigger("OGImpacted"); //Triggering the OG Impact
+            }
+            animator.SetBool("OGPlayerFalling", false);
         }
     }
     
