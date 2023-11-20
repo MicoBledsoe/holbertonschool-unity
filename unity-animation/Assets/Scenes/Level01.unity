@@ -1956,6 +1956,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Start (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e9aa2b525e40041b4955f358a3dca411, type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e9aa2b525e40041b4955f358a3dca411, type: 3}
 --- !u!1 &1237830327

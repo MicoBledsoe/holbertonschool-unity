@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour //playercontroller class inherting
     public Vector3 OG_StartPosition; //This is for marking the starting position in which is a reference to the Transform component
     public float rotationSpeed = 700f; //This is for the rotation of OGPlayer
     public Animator animator; // Animator component controlling the OGPlayer's animation states and transitions.
+    private bool isOGGrounded; //Keeping track if OGPlayer is grounded
 
     //ensuring that necessary references are set up before the game starts
     private void Awake() //This lifecycle method is called when the instance is being loaded
@@ -27,7 +28,9 @@ public class PlayerController : MonoBehaviour //playercontroller class inherting
     {
         if(OGCollision.gameObject.tag == "Ground") //Checking if the collision is with a GameObject tagged as "Ground" in the inspector
         {
+            isOGGrounded = true;
             animator.SetBool("OGHasLanded", true); //Set the Animator parameter OGHasLanded to true, indicating the OGPlayer has landed on the ground
+            animator.SetBool("OGPlayerFalling", false); //makeing sure the falling animation stops when the OGPlayer lands
         }
     }
     
@@ -35,6 +38,7 @@ public class PlayerController : MonoBehaviour //playercontroller class inherting
     {
         if(OGCollision.gameObject.tag == "Ground") //Checking if the collision that ended is with a GameObject tagged as "Ground" in the inspector
         {
+            isOGGrounded = false;
             animator.SetBool("OGHasLanded", false); //Checking the Animator parameter OGHasLanded to false, indicating the OPlayer is no longer on the ground
         }
     }
@@ -71,6 +75,10 @@ public class PlayerController : MonoBehaviour //playercontroller class inherting
         //Figures out if the OGPlayer is moving
         bool isMovingOGPlayer = XMovement != 0 || YMovement != 0; //boolean var, set to true if either X or Y is true if its zero then that means OG is stationary
         animator.SetBool("IsRunning", isMovingOGPlayer); // Sets the 'IsRunning' Animator parameter to true if the player is moving, false if not otherwise !
+        
+        //Figures out if the OGPlayer is falling
+        bool OGPlayerFalling = RB.velocity.y < 0 && !isOGGrounded;
+        animator.SetBool("OGPlayerFalling", OGPlayerFalling);
 
         // Rotation logic
         float rotation = Input.GetAxis("Horizontal") * rotationSpeed * Time.deltaTime; // calculates a rotation value based on OGplayer's horizontal input
