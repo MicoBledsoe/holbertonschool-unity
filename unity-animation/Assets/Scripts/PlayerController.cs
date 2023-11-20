@@ -74,13 +74,13 @@ public class PlayerController : MonoBehaviour //playercontroller class inherting
     private void Update() //Constantly updating every frame for any input by the user that happens within the game
     {
         float XMovement = Input.GetAxis("Horizontal"); //Grabs/checks the players horizontal inputs like the 'A' and 'D' keybinds
-        float YMovement = Input.GetAxis("Vertical"); //Grabs/checks the players Vertical inputs like the 'W' and 'S' keybinds
+        float ZMovement = Input.GetAxis("Vertical"); //Grabs/checks the players Vertical inputs like the 'W' and 'S' keybinds
 
-        Vector3 Movement = new Vector3(XMovement, 0f, YMovement) * Speed; //caculating the movement direction according when the player gives input
+        Vector3 Movement = new Vector3(XMovement, 0f, ZMovement) * Speed; //caculating the movement direction according when the player gives input
         RB.velocity = new Vector3(Movement.x, RB.velocity.y, Movement.z);//this sets the Rigidbodys horizontal velocity based on players input.
 
         //Figures out if the OGPlayer is moving
-        bool isMovingOGPlayer = XMovement != 0 || YMovement != 0; //boolean var, set to true if either X or Y is true if its zero then that means OG is stationary
+        bool isMovingOGPlayer = XMovement != 0 || ZMovement != 0; //boolean var, set to true if either X or Y is true if its zero then that means OG is stationary
         animator.SetBool("IsRunning", isMovingOGPlayer); // Sets the 'IsRunning' Animator parameter to true if the player is moving, false if not otherwise !
         
         //Figures out if the OGPlayer is falling
