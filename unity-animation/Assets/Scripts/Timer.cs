@@ -33,12 +33,6 @@ public class Timer : MonoBehaviour
 
     private void Update() //updating every frame
     {
-        if(OG_StartPosition.position.y < stopHeight) //if the players height is below a certain height then this will force stop the TimerScreenText on screen
-        {
-            timerActive = false; //turns false
-            Debug.Log($"Timer Active: {timerActive}, Y Position: {OG_StartPosition.position.y}"); //helped me with process of elimination to figure out why my timer wasn't working
-        }
-
         if(timerActive) //this updates the timer only if its active !!!
         {
 
