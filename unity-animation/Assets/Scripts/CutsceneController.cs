@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CutsceneController : MonoBehaviour
 {
-    public Canvas timerCanvas;
+    public GameObject timerCanvas;
     public GameObject MainCamera;
     public GameObject player;
     private Animator animator;
@@ -30,7 +30,7 @@ public class CutsceneController : MonoBehaviour
             this.gameObject.SetActive(false);
 
             //Enabling Timer
-            timerCanvas.enabled = true;
+            timerCanvas.SetActive(true);
 
             //Referecing back to the class which is CutScence, in which i will be disabling the cutscene controller script
             this.enabled = false;
