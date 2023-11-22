@@ -4132,7 +4132,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1400517081, guid: b351b06cff8514053bc468d5233a0fba, type: 3}
       propertyPath: Speed
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1400517083, guid: b351b06cff8514053bc468d5233a0fba, type: 3}
       propertyPath: TimerScreenText
