@@ -8,7 +8,7 @@ public class Cameracontroller : MonoBehaviour
     public float rotationSpeed = 2f; //rotation speed ^
     public bool isInverted = false;
     public float minY = 0f;
-    public float mouseSensor = 200.0f;
+    public float mouseSensor = 50f;
     private Vector3 offset;
     private bool isRotating;
     private float mouseX;
@@ -35,18 +35,22 @@ public class Cameracontroller : MonoBehaviour
     // Handling camera rotation
     if (Input.GetMouseButton(0)) // If the left mouse button is held down...
     {
+        mouseX = Input.GetAxis("Mouse X") * mouseSensor * 1;
         isRotating = true; // enables camera rotation.
     }
 
-    if (Input.GetMouseButtonUp(0)) // When the left mouse button is released...
+    else if (Input.GetMouseButtonUp(0)) // When the left mouse button is released...
     {
         isRotating = false; // stopss the from foing camera rotation.
     }
 
     if (isRotating) // If the camera is set to rotate
     {
-        mouseX = Input.GetAxis("Mouse X") * mouseSensor * Time.deltaTime; // Calculate rotation amount based on mouse movement within the game
-        transform.RotateAround(player.position, Vector3.up, mouseX); // Rotate the camera around the player
+        Quaternion rotation = Quaternion.Euler(0f, mouseX, 0f); //Quaternion for rotation around the y-axis based on mouse input
+        offset = rotation * offset; // Updating the camera's offset
+        Vector3 newPosition = player.position + offset; //Calculating the new position of the camera
+        transform.position = Vector3.Lerp(transform.position, newPosition, followSpeed * Time.deltaTime); //interp the camera's position from its current position to the new position
+        transform.LookAt(player.position); // making sure the camera always faces the OG
     }
     }
 }
